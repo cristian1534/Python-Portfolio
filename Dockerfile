@@ -7,4 +7,8 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn", "config.wsgi:application"]
+EXPOSE 8000
+
+ENV PORT=8000
+
+CMD ["gunicorn", "--config", "gunicorn.conf.py", "config.wsgi:application"]
