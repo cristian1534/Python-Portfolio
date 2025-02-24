@@ -2,8 +2,9 @@
 
 set -o errexit
 
-# Upgrade pip
+# Upgrade pip and install certificates
 python3 -m pip install --upgrade pip
+python3 -m pip install certifi pymongo[srv]
 
 # Install dependencies
 python3 -m pip install -r requirements.txt
