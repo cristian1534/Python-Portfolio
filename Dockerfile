@@ -8,10 +8,11 @@ RUN pip install -r requirements.txt
 COPY . .
 
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8000
+ENV PORT=10000
 ENV DEBUG=False
+ENV DJANGO_SETTINGS_MODULE=config.settings
 
-EXPOSE 8000
+EXPOSE 10000
 
-CMD gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --access-logfile - --error-logfile -
+CMD ["sh", "-c", "python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT --workers 4 --timeout 120 --log-level debug"]
 
