@@ -96,7 +96,7 @@ DATABASES = {
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
             'host': os.getenv('MONGODB_URI'),
-            'ssl': True,
+            'tls': True,
             'tlsAllowInvalidCertificates': True,
             'retryWrites': True,
             'w': 'majority'
