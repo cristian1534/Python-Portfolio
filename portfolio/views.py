@@ -47,7 +47,7 @@ def get_github_data():
 
     username = "cristian1534"
     headers = {
-        'Authorization': f'Bearer {token}',
+        'Authorization': f'{token}',
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Python'
     }
