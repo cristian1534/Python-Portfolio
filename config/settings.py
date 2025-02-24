@@ -95,6 +95,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import ssl
+
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
@@ -103,10 +105,10 @@ DATABASES = {
         'CLIENT': {
             'host': os.getenv('MONGODB_URI'),
             'ssl': True,
-            'ssl_cert_reqs': 'CERT_NONE',
+            'ssl_cert_reqs': ssl.CERT_NONE,
             'tlsAllowInvalidCertificates': True,
-            'retryWrites': True,
-            'w': 'majority'
+            'serverSelectionTimeoutMS': 30000,
+            'connectTimeoutMS': 30000,
         }
     }
 }
