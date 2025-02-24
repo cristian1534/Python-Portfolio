@@ -1,0 +1,160 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        amazon: {
+                            orange: 'rgb(249 115 22)', // orange-500
+                            dark: 'rgb(17 24 39)',     // gray-900
+                            light: 'rgb(0 0 0)'        // black
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .filter-orange {
+            filter: invert(56%) sepia(75%) saturate(1648%) hue-rotate(346deg) brightness(98%) contrast(91%);
+        }
+    </style>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen flex flex-col sm:flex-row">
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-button" class="sm:hidden fixed top-6 right-6 z-[70] p-2 rounded-lg bg-amazon-dark text-white">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+
+        <!-- Sidebar Navigation -->
+        <nav id="sidebar" class="fixed sm:relative w-64 min-h-screen h-full bg-amazon-dark text-white transform -translate-x-full sm:translate-x-0 transition-transform duration-300 ease-in-out sm:sticky sm:top-0 z-[60]">
+            <div class="p-6 pt-16 sm:pt-6">
+                <h2 class="text-2xl font-bold mb-8 text-amazon-orange">Cristian Machuca</h2>
+                <ul class="space-y-4">
+                    <li>
+                        <a href="{% url 'portfolio:index' %}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-amazon-light hover:text-amazon-orange">Home</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'portfolio:about' %}" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-amazon-light hover:text-amazon-orange">About</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'portfolio:index' %}#projects" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-amazon-light hover:text-amazon-orange">Projects</a>
+                    </li>
+                    <li>
+                        <a href="{% url 'portfolio:index' %}#contact" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-amazon-light hover:text-amazon-orange">Contact</a>
+                    </li>
+                </ul>
+        
+                <!-- Languages Section -->
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h3 class="text-sm uppercase tracking-wider text-gray-400 mb-4">Languages</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-300">English</span>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="far fa-star text-amazon-orange text-sm"></i>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-gray-300">Spanish</span>
+                            <div class="flex items-center">
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                                <i class="fas fa-star text-amazon-orange text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Welcome Toast -->
+        <div id="welcome-toast" class="fixed top-4 right-4 bg-amazon-dark text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-[-150%] opacity-0 transition-all duration-500 z-[100]">
+            ¡Bienvenido a mi Portfolio! 👋
+        </div>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-8">
+
+            {% block content %}
+            {% endblock %}
+        </main>
+    </div>
+
+    {% include 'portfolio/components/footer.html' %}
+    
+    <script>
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const sidebar = document.getElementById('sidebar');
+        
+        mobileMenuButton.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+    </script>
+    <script>
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+            offset: 100
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeToast = document.getElementById('welcome-toast');
+            welcomeToast.style.transform = 'translateY(0)';
+            welcomeToast.style.opacity = '1';
+            
+            setTimeout(() => {
+                welcomeToast.style.transform = 'translateY(-150%)';
+                welcomeToast.style.opacity = '0';
+            }, 3000);
+        });
+    </script>
+    <!-- Before closing body tag -->
+        <button id="scrollToTop" class="fixed bottom-8 left-8 sm:left-24 bg-amazon-orange p-3 rounded-full shadow-lg opacity-0 transition-opacity duration-300 hover:bg-amazon-dark z-50">
+            <i class="fas fa-arrow-up text-white"></i>
+        </button>
+    
+        <script>
+            const scrollButton = document.getElementById('scrollToTop');
+            
+            // Show/hide button based on scroll position
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    scrollButton.classList.remove('opacity-0');
+                } else {
+                    scrollButton.classList.add('opacity-0');
+                }
+            });
+            
+            // Smooth scroll to top
+            scrollButton.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        </script>
+</body>
+</html>

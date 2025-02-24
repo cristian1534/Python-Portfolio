@@ -1,0 +1,28 @@
+<div class="p-2 relative min-h-[50vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-amazon-dark to-black" data-aos="fade">
+    <div class="relative z-10 text-center px-4 max-w-3xl mx-auto" data-aos="zoom-in" data-aos-delay="200">
+        <div class="flex flex-col items-center justify-center gap-4">
+            <div class="w-32 h-32 md:w-40 md:h-40 relative" data-aos="fade-down" data-aos-delay="300">
+                <img src="https://res.cloudinary.com/dutafv5us/image/upload/v1740352706/dniqf6eqcq7jh1tjnqwp.png" 
+                     alt="Profile" 
+                     class="w-full h-full rounded-full object-cover border-4 border-amazon-orange/20">
+            </div>
+
+            <div>
+                <h1 class="text-4xl md:text-6xl font-bold mb-3">
+                    <span class="bg-clip-text text-transparent bg-gradient-to-r from-amazon-orange to-yellow-300 animate-gradient">
+                        Full Stack Developer
+                    </span>
+                </h1>
+                <p class="text-lg text-gray-300 mb-6">Building innovative web solutions with modern technologies</p>
+                <div class="flex gap-4 justify-center">
+                    <a href="{% url 'portfolio:download_cv' %}" class="bg-amazon-orange text-white px-6 py-2 rounded-lg hover:bg-amazon-dark transition-colors duration-300">
+                        <i class="fas fa-download mr-2"></i>Download CV
+                    </a>
+                    <a href="#contact" class="bg-amazon-dark text-white px-6 py-2 rounded-lg hover:bg-amazon-orange transition-colors duration-300">
+                        <i class="fas fa-envelope mr-2"></i>Contact Me
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

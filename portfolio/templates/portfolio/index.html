@@ -1,0 +1,145 @@
+{% extends 'portfolio/_base.html' %}
+
+{% block content %}
+    {% include 'portfolio/components/header.html' %}
+    {% include 'portfolio/components/video_intro.html' %}
+    <!-- Projects Section -->
+    <section class="mb-16" id="projects">
+        <h2 class="text-3xl font-bold text-amazon-dark mb-8">Featured Projects</h2>
+        <div class="relative">
+            <div id="projects-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 transition-all duration-500">
+                {% include 'portfolio/components/project_cards.html' %}
+            </div>
+
+            <!-- Projects Pagination -->
+            <div class="flex justify-center mt-8 space-x-2">
+                <button class="w-3 h-3 rounded-full bg-amazon-orange" data-project-page="0"></button>
+                <button class="w-3 h-3 rounded-full bg-gray-300" data-project-page="1"></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add this script after your existing carousel script -->
+    <script>
+        const projectsContainer = document.getElementById('projects-container');
+        const projectCards = projectsContainer.children;
+        const cardsPerPage = 3;
+        let currentProjectPage = 0;
+    
+        // Hide all cards except first page initially
+        function initializeProjects() {
+            for (let i = 0; i < projectCards.length; i++) {
+                projectCards[i].style.display = i < cardsPerPage ? 'block' : 'none';
+            }
+        }
+    
+        function showProjectPage(pageNum) {
+            const start = pageNum * cardsPerPage;
+            const end = start + cardsPerPage;
+    
+            // Update cards visibility
+            for (let i = 0; i < projectCards.length; i++) {
+                projectCards[i].style.display = (i >= start && i < end) ? 'block' : 'none';
+            }
+    
+            // Update pagination dots
+            document.querySelectorAll('[data-project-page]').forEach((dot, index) => {
+                dot.classList.toggle('bg-amazon-orange', index === pageNum);
+                dot.classList.toggle('bg-gray-300', index !== pageNum);
+            });
+    
+            currentProjectPage = pageNum;
+        }
+    
+        // Add click handlers for project pagination
+        document.querySelectorAll('[data-project-page]').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const page = parseInt(dot.dataset.projectPage);
+                showProjectPage(page);
+            });
+        });
+    
+        // Initialize projects on load
+        initializeProjects();
+    </script>
+
+    <!-- GitHub Repositories Section -->
+    <section class="mb-16" id="github-repos">
+        <h2 class="text-3xl font-bold text-amazon-dark mb-8">GitHub Repositories</h2>
+        {% include 'portfolio/components/github_repos.html' %}
+    </section>
+
+    <!-- Skills Section -->
+    <section class="mb-16 overflow-hidden">
+        <h2 class="text-3xl font-bold text-amazon-dark mb-8">Skills & Technologies</h2>
+        
+        <div class="relative max-w-6xl mx-auto px-4">
+            <!-- Carousel container -->
+            <div id="skills-carousel" class="flex transition-transform duration-500 ease-in-out">
+                {% include 'portfolio/components/tech_cards.html' %}
+            </div>
+    
+            <!-- Navigation buttons -->
+            <button class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-amazon-dark text-white p-2 rounded-full shadow-lg hover:bg-amazon-orange transition-colors duration-300" onclick="moveCarousel(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-amazon-dark text-white p-2 rounded-full shadow-lg hover:bg-amazon-orange transition-colors duration-300" onclick="moveCarousel(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- Add this script at the end of your content block -->
+    <script>
+        let currentPosition = 0;
+        const carousel = document.getElementById('skills-carousel');
+        const itemCount = carousel.children.length;
+        const itemsPerView = window.innerWidth >= 768 ? 4 : 1;
+        let autoPlayInterval;
+    
+        function moveCarousel(direction) {
+            const maxPosition = -(Math.max(0, itemCount - itemsPerView));
+            currentPosition = Math.min(0, Math.max(maxPosition, currentPosition + direction));
+            
+            // Reset to start if we reach the end
+            if (currentPosition === maxPosition && direction === -1) {
+                currentPosition = 0;
+            }
+            
+            const offset = (100 / itemsPerView) * currentPosition;
+            carousel.style.transform = `translateX(${offset}%)`;
+        }
+    
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(() => {
+                moveCarousel(-1);
+            }, 3000); // Move every 3 seconds
+        }
+    
+        function stopAutoPlay() {
+            clearInterval(autoPlayInterval);
+        }
+    
+        // Start autoplay
+        startAutoPlay();
+    
+        // Pause on hover
+        carousel.addEventListener('mouseenter', stopAutoPlay);
+        carousel.addEventListener('mouseleave', startAutoPlay);
+    
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const newItemsPerView = window.innerWidth >= 768 ? 4 : 1;
+            if (newItemsPerView !== itemsPerView) {
+                currentPosition = 0;
+                carousel.style.transform = 'translateX(0%)';
+            }
+        });
+    </script>
+
+    <!-- Contact Section -->
+    <section id="contact" class="mb-16">
+        <h2 class="text-3xl font-bold text-amazon-dark mb-8">Get in Touch</h2>
+        {% include 'portfolio/components/contact_form.html' %}
+    </section>
+{% endblock %}

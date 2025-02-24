@@ -1,0 +1,121 @@
+<!-- Project Card 1 -->
+{% for project in projects %}
+<div class="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="zoom-in-up" data-aos-delay="100">
+    <div class="relative overflow-hidden h-56">
+        <img src="{{ project.image }}" 
+             alt="{{ project.title }}" 
+             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+             onerror="this.src='https://placehold.co/600x400/1a1a1a/orange?text=Project'">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-6 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <h4 class="text-lg font-semibold mb-2">{{ project.title }}</h4>
+                <p class="text-sm text-gray-200">Visit my repositories for more projects</p>
+            </div>
+        </div>
+    </div>
+    <div class="p-6">
+        <h3 class="text-xl font-bold text-amazon-dark group-hover:text-amazon-orange transition-colors duration-300">{{ project.title }}</h3>
+        <p class="text-gray-600 mt-2 group-hover:text-gray-800">{{ project.description }}</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+            {% for tech in project.technologies %}
+                <span class="bg-gray-100 text-amazon-dark px-3 py-1 rounded-full text-sm group-hover:bg-amazon-orange group-hover:text-white transition-all duration-300">{{ tech }}</span>
+            {% endfor %}
+        </div>
+        {% if project.url %}
+        <div class="mt-6 flex justify-between items-center">
+            <a href="{{ project.url }}" target="_blank" class="bg-amazon-dark text-white px-4 py-2 rounded-lg hover:bg-amazon-orange transition-colors duration-300">
+                <i class="fas fa-external-link-alt mr-2"></i>View Project
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% empty %}
+<div class="col-span-full text-center text-gray-500 py-8">
+    No projects available yet.
+</div>
+{% endfor %}
+
+<!-- Project Card 2 -->
+<div class="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="zoom-in-up" data-aos-delay="200">
+    <img src="https://placehold.co/600x400" alt="Task Management App" class="w-full h-48 object-cover">
+    <div class="p-6">
+        <h3 class="text-xl font-bold text-amazon-dark mb-2">Task Management App</h3>
+        <p class="text-gray-600 mb-4">Collaborative task management system with real-time updates and team features.</p>
+        <div class="flex flex-wrap gap-2">
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">Django</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">PostgreSQL</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">Redis</span>
+        </div>
+    </div>
+</div>
+
+<!-- Project Card 3 -->
+<div class="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2" data-aos="zoom-in-up" data-aos-delay="300">
+    <img src="https://placehold.co/600x400" alt="AI Chat Application" class="w-full h-48 object-cover">
+    <div class="p-6">
+        <h3 class="text-xl font-bold text-amazon-dark mb-2">AI Chat Application</h3>
+        <p class="text-gray-600 mb-4">Real-time chat application with AI-powered responses and multi-language support.</p>
+        <div class="flex flex-wrap gap-2">
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">Python</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">TensorFlow</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">WebSocket</span>
+        </div>
+    </div>
+</div>
+
+<!-- Project Card 4 -->
+<div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <img src="https://placehold.co/600x400" alt="Fitness Tracker" class="w-full h-48 object-cover">
+    <div class="p-6">
+        <h3 class="text-xl font-bold text-amazon-dark mb-2">Fitness Tracker</h3>
+        <p class="text-gray-600 mb-4">Mobile-first fitness tracking app with workout plans and progress analytics.</p>
+        <div class="flex flex-wrap gap-2">
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">React Native</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">Firebase</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">GraphQL</span>
+        </div>
+    </div>
+</div>
+
+<!-- Project Card 5 -->
+<div class="bg-white rounded-lg shadow-lg overflow-hidden group hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+    <div class="relative overflow-hidden">
+        <img src="{{ project.image }}" alt="{{ project.title }}" class="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-500">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end">
+            <div class="p-4 text-white transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                <p class="text-sm">Visit my repositories for more projects</p>
+            </div>
+        </div>
+    </div>
+    <div class="p-6">
+        <h3 class="text-xl font-bold text-amazon-dark group-hover:text-amazon-orange transition-colors duration-300">Project Title</h3>
+        <p class="text-gray-600 mt-2 group-hover:text-gray-800">Project description goes here. This is a brief overview of what the project does.</p>
+        <div class="mt-4 flex flex-wrap gap-2">
+            <span class="bg-gray-100 text-amazon-dark px-3 py-1 rounded-full text-sm group-hover:bg-amazon-orange group-hover:text-white transition-all duration-300">React</span>
+            <span class="bg-gray-100 text-amazon-dark px-3 py-1 rounded-full text-sm group-hover:bg-amazon-orange group-hover:text-white transition-all duration-300">Node.js</span>
+            <span class="bg-gray-100 text-amazon-dark px-3 py-1 rounded-full text-sm group-hover:bg-amazon-orange group-hover:text-white transition-all duration-300">MongoDB</span>
+        </div>
+        <div class="mt-6 flex justify-between items-center">
+            <a href="#" class="text-amazon-dark hover:text-amazon-orange transition-colors duration-300">
+                <i class="fab fa-github text-xl group-hover:rotate-12 transform transition-transform"></i>
+            </a>
+            <a href="#" class="bg-amazon-dark text-white px-4 py-2 rounded-lg hover:bg-amazon-orange transition-colors duration-300">
+                Live Demo
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Project Card 6 -->
+<div class="bg-white rounded-lg shadow-lg overflow-hidden">
+    <img src="https://placehold.co/600x400" alt="Blog Platform" class="w-full h-48 object-cover">
+    <div class="p-6">
+        <h3 class="text-xl font-bold text-amazon-dark mb-2">Blog Platform</h3>
+        <p class="text-gray-600 mb-4">Full-featured blogging platform with markdown support and SEO optimization.</p>
+        <div class="flex flex-wrap gap-2">
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">Next.js</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">Strapi</span>
+            <span class="bg-amazon-light text-white px-3 py-1 rounded-full text-sm">AWS</span>
+        </div>
+    </div>
+</div>
