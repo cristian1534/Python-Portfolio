@@ -27,7 +27,7 @@ def contact(request):
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 def download_cv(request):
-    file_path = '/Users/development/Desktop/Porfolio Python/Python/static/cv/CV.pdf'
+    file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'Python', 'static', 'cv', 'CV.pdf')
     try:
         response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="Cristian_Machuca_CV.pdf"'
@@ -38,16 +38,16 @@ def download_cv(request):
         raise Http404("CV file not found")
 
 def get_github_data():
-    # Try to get cached data first
+    token = os.getenv("GITHUB_TOKEN")
+    print(f"Token available: {'Yes' if token else 'No'}")  # Debug line
+    
     cached_data = cache.get('github_repos')
     if cached_data:
         return cached_data
 
     username = "cristian1534"
-    repos = []
-    page = 1
-    
     headers = {
+        'Authorization': f'Bearer {token}',
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Python'
     }
@@ -55,12 +55,14 @@ def get_github_data():
     try:
         url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
         response = requests.get(url, headers=headers)
+        print(f"GitHub API Response Status: {response.status_code}")  # Debug line
         
         if response.status_code == 200:
             repos = response.json()
         else:
             print(f"GitHub API Error: {response.status_code}")
             print(f"Response: {response.text}")
+            return {'public_repos': 0, 'repositories': [], 'profile_url': f"https://github.com/{username}"}
             
     except Exception as e:
         print(f"Error: {e}")
@@ -72,9 +74,7 @@ def get_github_data():
         'profile_url': f"https://github.com/{username}"
     }
     
-    # Cache the data for 1 hour
     cache.set('github_repos', data, 3600)
-    
     return data
 
 class IndexView(TemplateView):
