@@ -95,7 +95,11 @@ DATABASES = {
         'NAME': 'portfolio_db',
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': os.getenv('MONGODB_URI')
+            'host': os.getenv('MONGODB_URI'),
+            'ssl': True,
+            'tlsAllowInvalidCertificates': True,
+            'retryWrites': True,
+            'w': 'majority'
         }
     }
 }
