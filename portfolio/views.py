@@ -7,6 +7,9 @@ import os
 from django.http import JsonResponse
 from .models import Contact
 from django.views.decorators.csrf import csrf_exempt
+from django.core.cache import cache
+from datetime import datetime, timedelta
+
 
 @csrf_exempt
 def contact(request):
@@ -35,46 +38,44 @@ def download_cv(request):
         raise Http404("CV file not found")
 
 def get_github_data():
+    # Try to get cached data first
+    cached_data = cache.get('github_repos')
+    if cached_data:
+        return cached_data
+
     username = "cristian1534"
     repos = []
     page = 1
     
     headers = {
-        'Authorization': os.getenv('GITHUB_TOKEN'),
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Python'
     }
     
     try:
-        user_url = f"https://api.github.com/users/{username}"
-        user_response = requests.get(user_url, headers=headers)
+        url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
+        response = requests.get(url, headers=headers)
         
-        if user_response.status_code != 200:
-            print(f"Authentication failed: {user_response.status_code}")
-            print(f"Response: {user_response.text}")
-            return {'public_repos': 0, 'repositories': [], 'profile_url': f"https://github.com/{username}"}
+        if response.status_code == 200:
+            repos = response.json()
+        else:
+            print(f"GitHub API Error: {response.status_code}")
+            print(f"Response: {response.text}")
             
-        while True:
-            url = f"https://api.github.com/users/{username}/repos?per_page=100&page={page}&sort=updated"
-            response = requests.get(url, headers=headers)
-            
-            if response.status_code == 200:
-                page_repos = response.json()
-                if not page_repos:
-                    break
-                repos.extend(page_repos)
-                page += 1
-            else:
-                break
-                
     except Exception as e:
+        print(f"Error: {e}")
         return {'public_repos': 0, 'repositories': [], 'profile_url': f"https://github.com/{username}"}
 
-    return {
+    data = {
         'public_repos': len(repos),
         'repositories': repos,
         'profile_url': f"https://github.com/{username}"
     }
+    
+    # Cache the data for 1 hour
+    cache.set('github_repos', data, 3600)
+    
+    return data
 
 class IndexView(TemplateView):
     template_name = 'portfolio/index.html'
