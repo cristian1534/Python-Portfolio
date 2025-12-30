@@ -9,6 +9,7 @@ from .models import Contact
 from django.views.decorators.csrf import csrf_exempt
 from django.core.cache import cache
 from datetime import datetime, timedelta
+from django.db.models import Q
 
 
 @csrf_exempt
@@ -26,10 +27,13 @@ def contact(request):
             return JsonResponse({'status': 'error', 'message': str(e)})
     return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
+
 def download_cv(request):
-    file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'Python', 'static', 'cv', 'CV.pdf')
+    file_path = os.path.join(os.path.dirname(
+        os.path.dirname(__file__)), 'Python', 'static', 'cv', 'CV.pdf')
     try:
-        response = FileResponse(open(file_path, 'rb'), content_type='application/pdf')
+        response = FileResponse(open(file_path, 'rb'),
+                                content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename="Cristian_Machuca_CV.pdf"'
         return response
     except FileNotFoundError as e:
@@ -37,10 +41,11 @@ def download_cv(request):
         from django.http import Http404
         raise Http404("CV file not found")
 
+
 def get_github_data():
     token = os.getenv("GITHUB_TOKEN")
     print(f"Token available: {'Yes' if token else 'No'}")  # Debug line
-    
+
     cached_data = cache.get('github_repos')
     if cached_data:
         return cached_data
@@ -51,19 +56,20 @@ def get_github_data():
         'Accept': 'application/vnd.github.v3+json',
         'User-Agent': 'Python'
     }
-    
+
     try:
         url = f"https://api.github.com/users/{username}/repos?per_page=100&sort=updated"
         response = requests.get(url, headers=headers)
-        print(f"GitHub API Response Status: {response.status_code}")  # Debug line
-        
+        # Debug line
+        print(f"GitHub API Response Status: {response.status_code}")
+
         if response.status_code == 200:
             repos = response.json()
         else:
             print(f"GitHub API Error: {response.status_code}")
             print(f"Response: {response.text}")
             return {'public_repos': 0, 'repositories': [], 'profile_url': f"https://github.com/{username}"}
-            
+
     except Exception as e:
         print(f"Error: {e}")
         return {'public_repos': 0, 'repositories': [], 'profile_url': f"https://github.com/{username}"}
@@ -73,9 +79,10 @@ def get_github_data():
         'repositories': repos,
         'profile_url': f"https://github.com/{username}"
     }
-    
+
     cache.set('github_repos', data, 3600)
     return data
+
 
 class IndexView(TemplateView):
     template_name = 'portfolio/index.html'
@@ -86,21 +93,22 @@ class IndexView(TemplateView):
         projects = Project.objects.all()
         print(f"Number of projects found: {projects.count()}")  # Debug line
         context['projects'] = projects
-        
+
         github_data = get_github_data()
         total_repos = len(github_data['repositories'])
-        
+
         repos_per_page = 4
         total_pages = (total_repos + repos_per_page - 1) // repos_per_page
-        
+
         try:
-            page = max(1, min(int(self.request.GET.get('page', 1)), total_pages))
+            page = max(
+                1, min(int(self.request.GET.get('page', 1)), total_pages))
         except ValueError:
             page = 1
-            
+
         start_idx = (page - 1) * repos_per_page
         end_idx = start_idx + repos_per_page
-        
+
         sliced_repos = github_data['repositories'][start_idx:end_idx]
         context['github_data'] = {
             'public_repos': total_repos,
@@ -109,6 +117,55 @@ class IndexView(TemplateView):
             'current_page': page
         }
         return context
+
+
+class DataView(TemplateView):
+    template_name = 'portfolio/data.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        keywords = [
+            'python', 'pandas', 'numpy', 'sql', 'data', 'jupyter',
+            'scikit', 'tensorflow', 'spark', 'r'
+        ]
+        q_obj = Q()
+        for kw in keywords:
+            q_obj |= Q(technology__icontains=kw)
+        projects = Project.objects.filter(q_obj)
+        context['projects'] = projects
+
+        github_data = get_github_data()
+        repos = github_data['repositories']
+        data_repos = []
+        for r in repos:
+            name = (r.get('name') or '').lower()
+            lang = r.get('language')
+            if (
+                (lang in ['Python', 'Jupyter Notebook', 'R']) or
+                ('data' in name) or ('analysis' in name) or ('etl' in name)
+            ):
+                data_repos.append(r)
+
+        total_repos = len(data_repos)
+        repos_per_page = 4
+        total_pages = (total_repos + repos_per_page - 1) // repos_per_page
+        try:
+            page = max(
+                1, min(int(self.request.GET.get('page', 1)), total_pages))
+        except ValueError:
+            page = 1
+        start_idx = (page - 1) * repos_per_page
+        end_idx = start_idx + repos_per_page
+        sliced_repos = data_repos[start_idx:end_idx]
+
+        context['github_data'] = {
+            'public_repos': total_repos,
+            'repositories': sliced_repos,
+            'total_pages': total_pages,
+            'current_page': page
+        }
+        return context
+
 
 def about(request):
     context = {

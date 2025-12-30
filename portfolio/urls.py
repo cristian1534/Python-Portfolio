@@ -5,6 +5,7 @@ app_name = 'portfolio'
 
 urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
+    path('data/', views.DataView.as_view(), name='data'),
     path('about/', views.about, name='about'),
     path('download-cv/', views.download_cv, name='download_cv'),
     path('contact/', views.contact, name='contact'),
